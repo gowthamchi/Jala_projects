@@ -12,8 +12,10 @@ pipeline {
 
         stage("Build Docker Image") {
             steps {
-                dir('Jala_projects/project1/app') {
-                    sh 'docker build -t gowtham-node-app .'
+                sh '''
+        cd Jala_projects/project1/app
+        docker build -t my-node-app .
+        '''
                 }
             }
         }
