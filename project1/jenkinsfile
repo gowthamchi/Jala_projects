@@ -1,1 +1,46 @@
 
+pipeline {
+    agent any
+
+    stages {
+        stage("Install Docker") {
+            steps {
+                sh '''
+                if ! command -v docker &> /dev/null
+                then
+                    echo "Docker not found, installing..."
+                    sudo apt update
+                    sudo apt install -y docker.io
+                    sudo usermod -aG docker $USER
+                    newgrp docker
+                else
+                    echo "Docker already installed"
+                fi
+                '''
+            }
+        }
+
+        stage("Clone the Repo") {
+            steps {
+                git url: 'https://github.com/gowthamchi/Jala_projects.git'
+            }
+        }
+
+        stage("Build Docker Image") {
+            steps {
+                dir('Jala_projects/project1/app') {
+                    sh 'docker build -t gowtham-node-app .'
+                }
+            }
+        }
+
+        stage("Run Docker Container") {
+            steps {
+                sh '''
+                docker rm -f gowtham-node-app-container || true
+                docker run -d -p 3000:3000 --name gowtham-node-app-container gowtham-node-app
+                '''
+            }
+        }
+    }
+}
