@@ -15,7 +15,7 @@ pipeline {
         }
 
 
-        stage("Docker registry){
+        stage("Docker registry"){
               steps{
                   withCredentials([usernamePaassword(credentialsId: 'docker_cred',usernameVariable: 'DOCKER_USER',usernamePassword: 'DOCKER_PASSWORD')]){
                     sh '''
