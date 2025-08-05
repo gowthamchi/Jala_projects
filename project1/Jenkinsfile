@@ -1,9 +1,12 @@
 pipeline {
     agent any
 
+    tools {
+        sonarQubeScanner 'SonarScanner' // 👈 must match the name from Jenkins tools config
+    }
+
     environment {
-        SONAR_HOST_URL = 'http://44.203.118.216:9090'
-        SONAR_PROJECT_KEY = 'My-Node-App'
+        DOCKER_IMAGE = 'my-node-app'
     }
 
     stages {
@@ -22,14 +25,15 @@ pipeline {
         stage("SonarQube Analysis") {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        cd project1/app
-                        sonar-scanner \
-                          -Dsonar.projectKey=My-Node-App \
-                          -Dsonar.sources=. \
-                          -Dsonar.host.url=$SONAR_HOST_URL \
-                          -Dsonar.token=$SONAR_TOKEN
-                    '''
+                    dir('project1/app') {
+                        sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=My-Node-App \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url=http://44.203.118.216:9090 \
+                            -Dsonar.token=$SONAR_TOKEN
+                        '''
+                    }
                 }
             }
         }
