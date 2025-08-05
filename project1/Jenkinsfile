@@ -14,32 +14,33 @@ pipeline {
             }
         }
 
-
-        stage("Docker registry"){
-              steps{
-                  withCredentials([usernamePaassword(credentialsId: 'docker_cred',usernameVariable: 'DOCKER_USER',usernamePassword: 'DOCKER_PASSWORD')]){
+        stage("Docker Registry Login") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
-                      docker login -u $DOCKER_USER -P $DOCKER_PASSWORD
-                
-                      '''
-                      
-                  }
-              }
+                        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+                    '''
+                }
+            }
         }
-       stage("Build Docker Image") {
-    steps {
-        sh '''
-        cd project1/app
-        docker build -t $DOCKER_USER/my-node-app .
-        docker push $DOCKER_USER/my-node-app
-        '''
-    }
-}
+
+        stage("Build & Push Docker Image") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                        cd project1/app
+                        docker build -t $DOCKER_USER/my-node-app .
+                        docker push $DOCKER_USER/my-node-app
+                    '''
+                }
+            }
+        }
+
         stage("Run Docker Container") {
             steps {
                 sh '''
-                docker rm -f gowtham-node-app-container || true
-                docker run -d -p 3000:3000 --name gowtham-node-app-container my-node-app
+                    docker rm -f gowtham-node-app-container || true
+                    docker run -d -p 3000:3000 --name gowtham-node-app-container $DOCKER_USER/my-node-app
                 '''
             }
         }
