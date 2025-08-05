@@ -40,7 +40,7 @@ pipeline {
             steps {
                 sh '''
                     docker rm -f gowtham-node-app-container || true
-                    docker run -d -p 3000:3000 --name gowtham-node-app-container $DOCKER_USER/my-node-app
+                    docker run -d -p 3000:3000 --name gowtham-node-app-container gowtham1198/my-node-app
                 '''
             }
         }
