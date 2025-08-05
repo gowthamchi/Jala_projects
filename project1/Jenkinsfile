@@ -14,16 +14,27 @@ pipeline {
             }
         }
 
-        stage("Build Docker Image") {
+
+        stage("Docker registry){
+              steps{
+                  withCredentials([usernamePaassword(credentialsId: 'docker_cred',usernameVariable: 'DOCKER_USER',usernamePassword: 'DOCKER_PASSWORD')]){
+                    sh '''
+                      docker login -u $DOCKER_USER -P $DOCKER_PASSWORD
+                
+                      '''
+                      
+                  }
+              }
+        }
+       stage("Build Docker Image") {
     steps {
         sh '''
         cd project1/app
-        docker build -t my-node-app .
+        docker build -t $DOCKER_USER/my-node-app .
+        docker push $DOCKER_USER/my-node-app
         '''
     }
 }
-
-
         stage("Run Docker Container") {
             steps {
                 sh '''
