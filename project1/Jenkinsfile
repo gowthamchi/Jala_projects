@@ -22,13 +22,14 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     dir('project1/app') {
-                        sh '''
-                            sonar-scanner \
-                              -Dsonar.projectKey=My-Node-App \
-                              -Dsonar.sources=. \
-                              -Dsonar.host.url=http://44.203.118.216:9090 \
-                              -Dsonar.token=$SONAR_TOKEN
-                        '''
+                       sh '''
+  cd project1/app
+  /opt/sonar-scanner/bin/sonar-scanner \
+    -Dsonar.projectKey=My-Node-App \
+    -Dsonar.sources=. \
+    -Dsonar.host.url=http://44.203.118.216:9090 \
+    -Dsonar.token=${SONAR_TOKEN}
+'''
                     }
                 }
             }
