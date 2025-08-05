@@ -2,16 +2,21 @@ pipeline {
     agent any
 
     stages {
-    
         stage("Clone the Repo") {
             steps {
                 git branch: 'main', url: 'https://github.com/gowthamchi/Jala_projects.git'
             }
         }
 
+        stage("Check Workspace Structure") {
+            steps {
+                sh 'ls -la'
+            }
+        }
+
         stage("Build Docker Image") {
             steps {
-                dir('Jala_projects/project1/app') {
+                dir('project1/app') {
                     sh 'docker build -t my-node-app .'
                 }
             }
