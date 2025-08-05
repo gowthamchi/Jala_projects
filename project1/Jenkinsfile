@@ -23,7 +23,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
                     dir('project1/app') {
                        sh '''
-  cd project1/app
+  
   /opt/sonar-scanner/bin/sonar-scanner \
     -Dsonar.projectKey=My-Node-App \
     -Dsonar.sources=. \
