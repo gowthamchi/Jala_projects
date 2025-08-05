@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        SonarQube Scanner 'SonarScanner' // 👈 must match the name from Jenkins tools config
-    }
-
     environment {
         DOCKER_IMAGE = 'my-node-app'
     }
@@ -28,10 +24,10 @@ pipeline {
                     dir('project1/app') {
                         sh '''
                             sonar-scanner \
-                            -Dsonar.projectKey=My-Node-App \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://44.203.118.216:9090 \
-                            -Dsonar.token=$SONAR_TOKEN
+                              -Dsonar.projectKey=My-Node-App \
+                              -Dsonar.sources=. \
+                              -Dsonar.host.url=http://44.203.118.216:9090 \
+                              -Dsonar.token=$SONAR_TOKEN
                         '''
                     }
                 }
