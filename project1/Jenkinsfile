@@ -25,10 +25,10 @@ pipeline {
                        sh '''
   
   /opt/sonar-scanner/bin/sonar-scanner \
-    -Dsonar.projectKey=My-Node-App \
-    -Dsonar.sources=. \
-    -Dsonar.host.url=http://98.81.207.30:9090 \
-    -Dsonar.token=${SONAR_TOKEN}
+  -Dsonar.projectKey=jenkins-project \
+  -Dsonar.sources=. \
+  -Dsonar.host.url=http://98.81.207.30:9090 \
+  -Dsonar.token="$SONAR_TOKEN"
 '''
                     }
                 }
