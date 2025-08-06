@@ -23,6 +23,7 @@ pipeline {
         withCredentials([string(credentialsId: 'secrettext', variable: 'SONAR_TOKEN')]) {
             dir('project1/app') {
                 sh '''
+                    docker rm -f gowtham-node-app-container || true
                     npm install
                     npm run coverage
 
