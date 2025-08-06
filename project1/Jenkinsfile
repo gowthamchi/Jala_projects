@@ -18,22 +18,22 @@ pipeline {
             }
         }
 
-        stage("SonarQube Analysis") {
-            steps {
-                withCredentials([string(credentialsId: 'secrettext', variable: 'SONAR_TOKEN')]) {
-                    dir('project1/app') {
-                       sh '''
-  
-  /opt/sonar-scanner/bin/sonar-scanner \
-  -Dsonar.projectKey=jenkins-project \
-  -Dsonar.sources=. \
-  -Dsonar.host.url=http://98.81.207.30:9090 \
-  -Dsonar.token="$SONAR_TOKEN"
-'''
-                    }
+     stage("SonarQube Analysis") {
+    steps {
+        withCredentials([string(credentialsId: 'secrettext', variable: 'SONAR_TOKEN')]) {
+            dir('project1/app') {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=jenkins-project \
+                        -Dsonar.sources=. \
+                        -Dsonar.token=$SONAR_TOKEN
+                    '''
                 }
             }
         }
+    }
+}
 
         stage("Docker Registry Login") {
             steps {
