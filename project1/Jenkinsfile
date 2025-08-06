@@ -46,7 +46,7 @@ pipeline {
 
         stage("Build & Push Docker Image") {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
                         cd project1/app
                         docker build -t $DOCKER_USER/my-node-app .
