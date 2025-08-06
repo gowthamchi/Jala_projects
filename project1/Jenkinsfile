@@ -29,6 +29,26 @@ pipeline {
                 }
             }
         }
+        stage("SonarQube Analysis") {
+    steps {
+        withCredentials([string(credentialsId: 'secrettext', variable: 'SONAR_TOKEN')]) {
+            dir('project1/app') {
+                sh '''
+                    docker rm -f gowtham-node-app-container || true
+                    npm install
+                    npm run coverage
+
+                    /opt/sonar-scanner/bin/sonar-scanner \
+                    -Dsonar.projectKey=jenkins-project \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://98.81.207.30:9090 \
+                    -Dsonar.token=$SONAR_TOKEN \
+                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+                '''
+            }
+        }
+    }
+}
 
         stage("Build ") {
             steps {
