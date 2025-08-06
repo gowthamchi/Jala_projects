@@ -18,26 +18,7 @@ pipeline {
             }
         }
 
-        stage("SonarQube Analysis") {
-    steps {
-        withCredentials([string(credentialsId: 'secrettext', variable: 'SONAR_TOKEN')]) {
-            dir('project1/app') {
-                sh '''
-                    docker rm -f gowtham-node-app-container || true
-                    npm install
-                    npm run coverage
-
-                    /opt/sonar-scanner/bin/sonar-scanner \
-                    -Dsonar.projectKey=jenkins-project \
-                    -Dsonar.sources=. \
-                    -Dsonar.host.url=http://98.81.207.30:9090 \
-                    -Dsonar.token=$SONAR_TOKEN \
-                    -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-                '''
-            }
-        }
-    }
-}
+    
 
         stage("Docker Registry Login") {
             steps {
@@ -55,11 +36,27 @@ pipeline {
                     sh '''
                         cd project1/app
                         docker build -t $DOCKER_USER/my-node-app .
-                        docker push $DOCKER_USER/my-node-app
+                        
                     '''
                 }
             }
         }
+        stage("trivy scan"){
+            steps{
+                sh ' trivy image --exit-code 1 --severity CRITICAL,HIGH my-node-app:latest'
+            }
+        }
+        stage("Build & Push Docker Image") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                       docker push $DOCKER_USER/my-node-app
+                        
+                    '''
+                }
+            }
+        }
+
 
         stage("Run Docker Container") {
             steps {
