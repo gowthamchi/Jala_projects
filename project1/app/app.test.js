@@ -1,9 +1,11 @@
+const request = require('supertest');
+const server = require('./index'); // path to your index.js file
 
-const assert = require('assert');
-const app = require('./app'); // Make sure your real code is imported!
-
-describe('Sample Test', () => {
-  it('should return true', () => {
-    assert.strictEqual(true, true);
+describe('GET /', () => {
+  it('should return expected text message', (done) => {
+    request(server)
+      .get('/')
+      .expect(200)
+      .expect('Hello from Node.js CI/CD via Jenkins! this is gowtham reddy', done);
   });
 });
