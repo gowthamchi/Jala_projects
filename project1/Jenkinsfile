@@ -20,14 +20,14 @@ pipeline {
 
         stage("SonarQube Analysis") {
             steps {
-                withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                withCredentials([string(credentialsId: 'secrettext', variable: 'SONAR_TOKEN')]) {
                     dir('project1/app') {
                        sh '''
   
   /opt/sonar-scanner/bin/sonar-scanner \
     -Dsonar.projectKey=My-Node-App \
     -Dsonar.sources=. \
-    -Dsonar.host.url=http://44.203.118.216:9090 \
+    -Dsonar.host.url=http://98.81.207.30:9090 \
     -Dsonar.token=${SONAR_TOKEN}
 '''
                     }
@@ -37,7 +37,7 @@ pipeline {
 
         stage("Docker Registry Login") {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker_cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh '''
                         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
                     '''
