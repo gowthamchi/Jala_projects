@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-   "test": "mocha app.test.js",
-  "coverage": "nyc --reporter=lcov --reporter=text mocha app.test.js"
+    "test": "mocha app.test.js",
+    "coverage": "nyc --reporter=lcov --reporter=text mocha app.test.js"
   },
   "dependencies": {
     "express": "^4.18.2"
