@@ -1,14 +1,19 @@
-const http = require('http');
-const PORT = 3000;
+const express = require('express');
+const client = require('prom-client');
+const app = express();
 
-const server = http.createServer((req, res) => {
-  res.end('Hello from Node.js CI/CD via Jenkins! this is gowtham reddy');
+const register = new client.Registry();
+client.collectDefaultMetrics({ register });
+
+app.get('/metrics',async (req,res)=>{
+  register.set('Content-type',register.contentType);
+  register.end(await register.metrics());
 });
 
-if (require.main === module) {
-  server.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-}
+app.get('/', (req, res) => {
+  res.send('Default Prometheus metrics enabled.');
+});
 
-module.exports = server; // <-- this is important for testing
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
